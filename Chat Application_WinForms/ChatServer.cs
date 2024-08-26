@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ChatApplication
@@ -10,8 +11,11 @@ namespace ChatApplication
     internal class ChatServer
     {
         private TcpListener server;
-        private ConcurrentBag<TcpClient> clients = new ConcurrentBag<TcpClient>();
+        private List<TcpClient> clients = new List<TcpClient>();
+        private readonly object lockObj = new object();
         private int port;
+        private CancellationTokenSource cancellationTokenSource;
+        internal Action<string> MessageReceived;
 
         public ChatServer(int port)
         {
@@ -24,59 +28,95 @@ namespace ChatApplication
             server.Start();
             Console.WriteLine("Server started on port " + port);
 
-            AcceptClientsAsync();
+            cancellationTokenSource = new CancellationTokenSource();
+            _ = Task.Run(() => AcceptClients(cancellationTokenSource.Token));
         }
 
-        private async void AcceptClientsAsync()
+        public void Stop()
         {
-            while (true)
+            cancellationTokenSource.Cancel();
+            server.Stop();
+            lock (lockObj)
             {
-                TcpClient client = await server.AcceptTcpClientAsync();
-                clients.Add(client);
-                Console.WriteLine("Client connected");
+                foreach (var client in clients)
+                {
+                    client.Close();
+                }
+                clients.Clear();
+            }
+            Console.WriteLine("Server stopped");
+        }
 
-                HandleClientAsync(client);
+        private async Task AcceptClients(CancellationToken cancellationToken)
+        {
+            try
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    TcpClient client = await server.AcceptTcpClientAsync();
+                    lock (lockObj)
+                    {
+                        clients.Add(client);
+                    }
+                    Console.WriteLine("Client connected");
+
+                    _ = Task.Run(() => HandleClient(client, cancellationToken));
+                }
+            }
+            catch (Exception ex) when (ex is ObjectDisposedException || ex is OperationCanceledException)
+            {
+                // Server stopped
             }
         }
 
-        private async void HandleClientAsync(TcpClient client)
+        private async Task HandleClient(TcpClient client, CancellationToken cancellationToken)
         {
             NetworkStream stream = client.GetStream();
-            byte[] buffer = new byte[256];
+            byte[] buffer = new byte[1024];
             int bytesRead;
 
             try
             {
-                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
+                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) != 0)
                 {
                     string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     Console.WriteLine("Received: " + message);
-                    await BroadcastMessageAsync(message, client);
+                    await BroadcastMessage(message, client);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is ObjectDisposedException || ex is OperationCanceledException)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                // Client disconnected
             }
             finally
             {
-                clients.TryTake(out client);
+                lock (lockObj)
+                {
+                    clients.Remove(client);
+                }
                 client.Close();
                 Console.WriteLine("Client disconnected");
             }
         }
 
-        private async Task BroadcastMessageAsync(string message, TcpClient sender)
+        private async Task BroadcastMessage(string message, TcpClient sender)
         {
             byte[] data = Encoding.UTF8.GetBytes(message);
-            foreach (var client in clients)
+            List<Task> tasks = new List<Task>();
+
+            lock (lockObj)
             {
-                if (client != sender)
+                foreach (var client in clients)
                 {
-                    NetworkStream stream = client.GetStream();
-                    await stream.WriteAsync(data, 0, data.Length);
+                    if (client != sender)
+                    {
+                        NetworkStream stream = client.GetStream();
+                        tasks.Add(stream.WriteAsync(data, 0, data.Length));
+                    }
                 }
             }
+
+            await Task.WhenAll(tasks);
         }
     }
 }

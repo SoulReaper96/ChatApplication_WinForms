@@ -1,5 +1,5 @@
+using ChatApplication;
 using System;
-using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -13,20 +13,23 @@ namespace Chat_Application_WinForms
         private TcpClient _client;
         private NetworkStream _stream;
         private CancellationTokenSource _cancellationTokenSource;
+        private ChatServer _chatServer;
 
         public ChatApplication()
         {
             InitializeComponent();
+            _chatServer = new ChatServer(5080);
+            _chatServer.MessageReceived += OnMessageReceived;
         }
 
         private async void ConnectTo_btn_Click(object sender, EventArgs e)
         {
             try
             {
-                string _server = ServerAddr_tb.Text;
-                int _port = int.Parse(PortNum_tb.Text);
+                string server = ServerAddr_tb.Text;
+                int port = int.Parse(PortNum_tb.Text);
                 _client = new TcpClient();
-                await _client.ConnectAsync(_server, _port);
+                await _client.ConnectAsync(server, port);
                 _stream = _client.GetStream();
 
                 _cancellationTokenSource = new CancellationTokenSource();
@@ -42,22 +45,17 @@ namespace Chat_Application_WinForms
 
         private void DisconnectFrom_btn_Click(object sender, EventArgs e)
         {
-            if (_client != null)
-            {
-                _cancellationTokenSource?.Cancel();
-                _client.Close();
-                ConnectionStatus_lbl.Text = "Disconnected";
-            }
+            Disconnect();
         }
 
         private async void SendMessage_btn_Click(object sender, EventArgs e)
         {
             if (_client != null && _client.Connected)
             {
-                string _message = InputMessage_tb.Text;
-                byte[] _data = Encoding.UTF8.GetBytes(_message);
-                await _stream.WriteAsync(_data, 0, _data.Length);
-                ChatMessages_rtb.AppendText("Me: " + _message + Environment.NewLine);
+                string message = InputMessage_tb.Text;
+                byte[] data = Encoding.UTF8.GetBytes(message);
+                await _stream.WriteAsync(data, 0, data.Length);
+                ChatMessages_rtb.AppendText("Me: " + message + Environment.NewLine);
                 InputMessage_tb.Clear();
             }
         }
@@ -66,19 +64,60 @@ namespace Chat_Application_WinForms
         {
             try
             {
-                byte[] _data = new byte[1024];
+                byte[] buffer = new byte[1024];
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    int _bytes = await _stream.ReadAsync(_data, 0, _data.Length, cancellationToken);
-                    if (_bytes == 0) break; // Connection closed
+                    int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+                    if (bytesRead == 0) break; // Connection closed
 
-                    string _message = Encoding.UTF8.GetString(_data, 0, _bytes);
-                    Invoke(new Action(() => ChatMessages_rtb.AppendText("Server: " + _message + Environment.NewLine)));
+                    string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    Invoke(new Action(() => ChatMessages_rtb.AppendText("Server: " + message + Environment.NewLine)));
                 }
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
                 Invoke(new Action(() => MessageBox.Show("Error: " + ex.Message)));
+            }
+        }
+
+        private void OnMessageReceived(string message)
+        {
+            try
+            {
+                Invoke(new Action(() =>
+                {
+                    if (ChatMessages_rtb != null)
+                    {
+                        ChatMessages_rtb.AppendText("Server: " + message + Environment.NewLine);
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                // Log or handle the exception as needed
+                MessageBox.Show("An error occurred while updating the chat messages: " + ex.Message);
+            }
+        }
+
+        private void ChatApplication_Load(object sender, EventArgs e)
+        {
+            _chatServer.Start();
+        }
+
+        private void ChatApplication_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Disconnect();
+            _chatServer.Stop();
+        }
+
+        private void Disconnect()
+        {
+            if (_client != null)
+            {
+                _cancellationTokenSource?.Cancel();
+                _client.Close();
+                _client = null;
+                ConnectionStatus_lbl.Text = "Disconnected";
             }
         }
     }

@@ -243,6 +243,8 @@
             MainMenuStrip = menuStrip1;
             Name = "ChatApplication";
             Text = "Chat Application";
+            FormClosing += ChatApplication_FormClosing;
+            Load += ChatApplication_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             panel1.ResumeLayout(false);
