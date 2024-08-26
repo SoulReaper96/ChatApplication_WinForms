@@ -15,11 +15,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "G:\\Studies\\Chat Application_WinForms\\Chat Application_WinForms\\Chat Application_WinForms.csproj",
+      "projectUniqueName": "G:\\GitHub Repo Cloned\\SoulReaper96\\SoulReaper96\\ChatApplication_WinForms\\Chat Application_WinForms\\Chat Application_WinForms.csproj",
       "projectName": "Chat Application_WinForms",
-      "projectPath": "G:\\Studies\\Chat Application_WinForms\\Chat Application_WinForms\\Chat Application_WinForms.csproj",
+      "projectPath": "G:\\GitHub Repo Cloned\\SoulReaper96\\SoulReaper96\\ChatApplication_WinForms\\Chat Application_WinForms\\Chat Application_WinForms.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "G:\\Studies\\Chat Application_WinForms\\Chat Application_WinForms\\obj\\",
+      "outputPath": "G:\\GitHub Repo Cloned\\SoulReaper96\\SoulReaper96\\ChatApplication_WinForms\\Chat Application_WinForms\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
