@@ -14,3 +14,20 @@ G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-
 G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.pdb
 G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.genruntimeconfig.cache
 G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\ref\Chat Application_WinForms.dll
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat_Application_WinForms.ChatApplication.resources
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.csproj.GenerateResource.cache
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.GeneratedMSBuildEditorConfig.editorconfig
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.AssemblyInfoInputs.cache
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.AssemblyInfo.cs
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.csproj.CoreCompileInputs.cache
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.sourcelink.json
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.dll
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\refint\Chat Application_WinForms.dll
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.pdb
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\bin\Debug\net8.0-windows\Chat Application_WinForms.exe
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\bin\Debug\net8.0-windows\Chat Application_WinForms.deps.json
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\bin\Debug\net8.0-windows\Chat Application_WinForms.runtimeconfig.json
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\bin\Debug\net8.0-windows\Chat Application_WinForms.dll
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\bin\Debug\net8.0-windows\Chat Application_WinForms.pdb
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.genruntimeconfig.cache
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\ref\Chat Application_WinForms.dll
