@@ -1,0 +1,16 @@
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\bin\Debug\net8.0-windows\Chat Application_WinForms.exe
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\bin\Debug\net8.0-windows\Chat Application_WinForms.deps.json
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\bin\Debug\net8.0-windows\Chat Application_WinForms.runtimeconfig.json
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\bin\Debug\net8.0-windows\Chat Application_WinForms.dll
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\bin\Debug\net8.0-windows\Chat Application_WinForms.pdb
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat_Application_WinForms.ChatApplication.resources
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.csproj.GenerateResource.cache
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.GeneratedMSBuildEditorConfig.editorconfig
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.AssemblyInfoInputs.cache
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.AssemblyInfo.cs
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.csproj.CoreCompileInputs.cache
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.dll
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\refint\Chat Application_WinForms.dll
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.pdb
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.genruntimeconfig.cache
+G:\Studies\Chat Application_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\ref\Chat Application_WinForms.dll
