@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace ChatApplication
 {
     internal class ChatServer
     {
         private TcpListener server;
-        private List<TcpClient> clients = new List<TcpClient>();
-        private readonly object lockObj = new object();
+        private ConcurrentBag<TcpClient> clients = new ConcurrentBag<TcpClient>();
         private int port;
 
         public ChatServer(int port)
@@ -25,27 +24,22 @@ namespace ChatApplication
             server.Start();
             Console.WriteLine("Server started on port " + port);
 
-            Thread acceptThread = new Thread(AcceptClients);
-            acceptThread.Start();
+            AcceptClientsAsync();
         }
 
-        private void AcceptClients()
+        private async void AcceptClientsAsync()
         {
             while (true)
             {
-                TcpClient client = server.AcceptTcpClient();
-                lock (lockObj)
-                {
-                    clients.Add(client);
-                }
+                TcpClient client = await server.AcceptTcpClientAsync();
+                clients.Add(client);
                 Console.WriteLine("Client connected");
 
-                Thread clientThread = new Thread(() => HandleClient(client));
-                clientThread.Start();
+                HandleClientAsync(client);
             }
         }
 
-        private void HandleClient(TcpClient client)
+        private async void HandleClientAsync(TcpClient client)
         {
             NetworkStream stream = client.GetStream();
             byte[] buffer = new byte[256];
@@ -53,11 +47,11 @@ namespace ChatApplication
 
             try
             {
-                while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) != 0)
+                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
                 {
                     string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     Console.WriteLine("Received: " + message);
-                    BroadcastMessage(message, client);
+                    await BroadcastMessageAsync(message, client);
                 }
             }
             catch (Exception ex)
@@ -66,27 +60,21 @@ namespace ChatApplication
             }
             finally
             {
-                lock (lockObj)
-                {
-                    clients.Remove(client);
-                }
+                clients.TryTake(out client);
                 client.Close();
                 Console.WriteLine("Client disconnected");
             }
         }
 
-        private void BroadcastMessage(string message, TcpClient sender)
+        private async Task BroadcastMessageAsync(string message, TcpClient sender)
         {
             byte[] data = Encoding.UTF8.GetBytes(message);
-            lock (lockObj)
+            foreach (var client in clients)
             {
-                foreach (var client in clients)
+                if (client != sender)
                 {
-                    if (client != sender)
-                    {
-                        NetworkStream stream = client.GetStream();
-                        stream.Write(data, 0, data.Length);
-                    }
+                    NetworkStream stream = client.GetStream();
+                    await stream.WriteAsync(data, 0, data.Length);
                 }
             }
         }
