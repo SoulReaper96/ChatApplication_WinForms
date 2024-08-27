@@ -118,5 +118,22 @@ namespace ChatApplication
 
             await Task.WhenAll(tasks);
         }
+
+        public async Task SendMessageToAllClientsAsync(string message)
+        {
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            List<Task> tasks = new List<Task>();
+
+            lock (lockObj)
+            {
+                foreach (var client in clients)
+                {
+                    NetworkStream stream = client.GetStream();
+                    tasks.Add(stream.WriteAsync(data, 0, data.Length));
+                }
+            }
+
+            await Task.WhenAll(tasks);
+        }
     }
 }

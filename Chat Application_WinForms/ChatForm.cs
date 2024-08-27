@@ -14,12 +14,16 @@ namespace Chat_Application_WinForms
         private NetworkStream? _stream;
         private CancellationTokenSource? _cancellationTokenSource;
         private ChatServer _chatServer;
+        private List<string> _users;
+        private Dictionary<string, List<string>> _userMessages;
 
         public ChatApplication()
         {
             InitializeComponent();
             _chatServer = new ChatServer(5080);
             _chatServer.MessageReceived += OnMessageReceived;
+            _users = new List<string>();
+            _userMessages = new Dictionary<string, List<string>>();
         }
 
         private async void ConnectTo_btn_Click(object sender, EventArgs e)
@@ -86,6 +90,16 @@ namespace Chat_Application_WinForms
                 byte[] data = Encoding.UTF8.GetBytes(message);
                 await _stream.WriteAsync(data, 0, data.Length);
 
+                string? _selectedUser = Users_lstbox.SelectedItem?.ToString();
+                if (_selectedUser != null)
+                {
+                    if (_userMessages.ContainsKey(_selectedUser))
+                    {
+                        _userMessages[_selectedUser] = new List<string>();
+                    }
+                    _userMessages[_selectedUser].Add("Me: " + message);
+                }
+
                 if (ChatMessages_rtb != null)
                 {
                     ChatMessages_rtb.AppendText("Me: " + message + Environment.NewLine);
@@ -100,6 +114,42 @@ namespace Chat_Application_WinForms
             else
             {
                 MessageBox.Show("Not connected to the server.");
+            }
+        }
+
+        private async void ServerMessage_btn_Click(object sender, EventArgs e)
+        {
+            if (ServerMessage_tb == null)
+            {
+                MessageBox.Show("Input message textbox is not initialized.");
+                return;
+            }
+
+            string message = ServerMessage_tb.Text;
+            if (string.IsNullOrEmpty(message))
+            {
+                MessageBox.Show("Message cannot be empty.");
+                return;
+            }
+
+            try
+            {
+                await _chatServer.SendMessageToAllClientsAsync(message);
+
+                if (ChatMessages_rtb != null)
+                {
+                    ChatMessages_rtb.AppendText("Server: " + message + Environment.NewLine);
+                }
+                else
+                {
+                    MessageBox.Show("Chat messages textbox is not initialized.");
+                }
+
+                ServerMessage_tb.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
             }
         }
 
@@ -120,10 +170,27 @@ namespace Chat_Application_WinForms
                     if (bytesRead == 0) break; // Connection closed
 
                     string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                    Invoke(new Action(() => ChatMessages_rtb?.AppendText("Server: " + message + Environment.NewLine)));
+                    Invoke(new Action(() =>
+                    {
+                        string? _selectedUser = Users_lstbox.SelectedItem?.ToString();
+                        if (_selectedUser != null)
+                        {
+                            if (!_userMessages.ContainsKey(_selectedUser))
+                            {
+                                _userMessages[_selectedUser] = new List<string>();
+                            }
+                            _userMessages[_selectedUser].Add("Server: " + message);
+                        }
+
+                        ChatMessages_rtb?.AppendText("Server: " + message + Environment.NewLine);
+                    }));
                 }
             }
-            catch (Exception ex) when (!(ex is OperationCanceledException))
+            catch (OperationCanceledException)
+            {
+                // Handle the cancellation
+            }
+            catch (Exception ex)
             {
                 Invoke(new Action(() => MessageBox.Show("Error: " + ex.Message)));
             }
@@ -135,6 +202,16 @@ namespace Chat_Application_WinForms
             {
                 Invoke(new Action(() =>
                 {
+                    string? _selectedUser = Users_lstbox.SelectedItem?.ToString();
+                    if (_selectedUser != null)
+                    {
+                        if (!_userMessages.ContainsKey(_selectedUser))
+                        {
+                            _userMessages[_selectedUser] = new List<string>();
+                        }
+                        _userMessages[_selectedUser].Add("Server: " + message);
+                    }
+
                     if (ChatMessages_rtb != null)
                     {
                         ChatMessages_rtb.AppendText("Server: " + message + Environment.NewLine);
@@ -151,12 +228,14 @@ namespace Chat_Application_WinForms
         private void ChatApplication_Load(object sender, EventArgs e)
         {
             _chatServer.Start();
+            LoadUsers();
         }
 
         private void ChatApplication_FormClosing(object sender, FormClosingEventArgs e)
         {
             Disconnect();
             _chatServer.Stop();
+            SaveUsers();
         }
 
         private void Disconnect()
@@ -166,8 +245,75 @@ namespace Chat_Application_WinForms
                 _cancellationTokenSource?.Cancel();
                 _client.Close();
                 _client = null;
+                _cancellationTokenSource?.Dispose();
+                _cancellationTokenSource = null;
                 ConnectionStatus_lbl.Text = "Connection Status: Disconnected";
                 Connection_pbar.Value = 0;
+            }
+        }
+
+        private void AddUserToolItem_Click(object sender, EventArgs e)
+        {
+            using (var addUserForm = new AddUserForm())
+            {
+                if (addUserForm.ShowDialog() == DialogResult.OK && addUserForm._userName != null)
+                {
+                    AddNewUser(addUserForm._userName);
+                }
+            }
+        }
+
+        private void AddNewUser(string userName)
+        {
+            if (_users != null && !_users.Contains(userName))
+            {
+                _users.Add(userName);
+                Users_lstbox.Items.Add(userName);
+                SaveUsers();
+            }
+        }
+
+
+        private void LoadUsers()
+        {
+            string filePath = "G:\\Studies\\Chat Application_WinForms\\Users.txt"; // Path to your users file
+
+            if (File.Exists(filePath))
+            {
+                var users = File.ReadAllLines(filePath);
+                foreach (var user in users)
+                {
+                    if (!string.IsNullOrEmpty(user) && !_users.Contains(user))
+                    {
+                        _users.Add(user);
+                        Users_lstbox.Items.Add(user);
+                        _userMessages[user] = new List<string>(); // Add this line to create an entry in the dictionary
+                    }
+                }
+            }
+        }
+
+        private void SaveUsers()
+        {
+            string filePath = "G:\\Studies\\Chat Application_WinForms\\Users.txt"; // Path to your users file
+            File.WriteAllLines(filePath, _users);
+        }
+
+        private void Users_lstbox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DisplaySelectedUserMessages();
+        }
+
+        private void DisplaySelectedUserMessages()
+        {
+            string? selectedUser = Users_lstbox.SelectedItem?.ToString();
+            if (selectedUser != null && _userMessages.ContainsKey(selectedUser))
+            {
+                ChatMessages_rtb.Clear();
+                foreach (var message in _userMessages[selectedUser])
+                {
+                    ChatMessages_rtb.AppendText(message + Environment.NewLine);
+                }
             }
         }
     }

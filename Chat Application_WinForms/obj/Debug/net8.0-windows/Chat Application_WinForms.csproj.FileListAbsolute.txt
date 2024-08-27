@@ -31,3 +31,4 @@ G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Ap
 G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\bin\Debug\net8.0-windows\Chat Application_WinForms.pdb
 G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat Application_WinForms.genruntimeconfig.cache
 G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\ref\Chat Application_WinForms.dll
+G:\GitHub Repo Cloned\SoulReaper96\SoulReaper96\ChatApplication_WinForms\Chat Application_WinForms\obj\Debug\net8.0-windows\Chat_Application_WinForms.AddUserForm.resources

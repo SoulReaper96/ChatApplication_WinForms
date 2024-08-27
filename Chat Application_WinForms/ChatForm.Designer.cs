@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             menuStrip1 = new MenuStrip();
-            fileToolStripMenuItem = new ToolStripMenuItem();
-            connectToolStripMenuItem = new ToolStripMenuItem();
-            disconnectToolStripMenuItem = new ToolStripMenuItem();
-            helpToolStripMenuItem = new ToolStripMenuItem();
-            aboutToolStripMenuItem = new ToolStripMenuItem();
+            FileToolMenuItem = new ToolStripMenuItem();
+            ConnectToolItem = new ToolStripMenuItem();
+            DisconnectToolItem = new ToolStripMenuItem();
+            AddUserToolItem = new ToolStripMenuItem();
+            HelpToolMenuItem = new ToolStripMenuItem();
+            AboutToolItem = new ToolStripMenuItem();
             panel1 = new Panel();
             DisconnectFrom_btn = new Button();
             ConnectTo_btn = new Button();
@@ -42,13 +43,15 @@
             ServerAddr_tb = new TextBox();
             label1 = new Label();
             panel2 = new Panel();
+            ServerMessage_tb = new TextBox();
+            ServerMessage_btn = new Button();
             InputMessage_tb = new TextBox();
             ChatMessages_rtb = new RichTextBox();
             SendMessage_btn = new Button();
-            AllUsers_lstbox = new ListBox();
+            Users_lstbox = new ListBox();
             statusStrip1 = new StatusStrip();
-            ConnectionStatus_lbl = new ToolStripStatusLabel();
             Connection_pbar = new ToolStripProgressBar();
+            ConnectionStatus_lbl = new ToolStripStatusLabel();
             menuStrip1.SuspendLayout();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -59,44 +62,51 @@
             // 
             menuStrip1.BackColor = Color.Gainsboro;
             menuStrip1.Font = new Font("Arial", 11F, FontStyle.Bold);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, helpToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { FileToolMenuItem, HelpToolMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(784, 26);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
-            // fileToolStripMenuItem
+            // FileToolMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { connectToolStripMenuItem, disconnectToolStripMenuItem });
-            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            fileToolStripMenuItem.Size = new Size(46, 22);
-            fileToolStripMenuItem.Text = "File";
+            FileToolMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ConnectToolItem, DisconnectToolItem, AddUserToolItem });
+            FileToolMenuItem.Name = "FileToolMenuItem";
+            FileToolMenuItem.Size = new Size(46, 22);
+            FileToolMenuItem.Text = "File";
             // 
-            // connectToolStripMenuItem
+            // ConnectToolItem
             // 
-            connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            connectToolStripMenuItem.Size = new Size(156, 22);
-            connectToolStripMenuItem.Text = "Connect";
+            ConnectToolItem.Name = "ConnectToolItem";
+            ConnectToolItem.Size = new Size(176, 22);
+            ConnectToolItem.Text = "Connect";
             // 
-            // disconnectToolStripMenuItem
+            // DisconnectToolItem
             // 
-            disconnectToolStripMenuItem.Name = "disconnectToolStripMenuItem";
-            disconnectToolStripMenuItem.Size = new Size(156, 22);
-            disconnectToolStripMenuItem.Text = "Disconnect";
+            DisconnectToolItem.Name = "DisconnectToolItem";
+            DisconnectToolItem.Size = new Size(176, 22);
+            DisconnectToolItem.Text = "Disconnect";
             // 
-            // helpToolStripMenuItem
+            // AddUserToolItem
             // 
-            helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { aboutToolStripMenuItem });
-            helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            helpToolStripMenuItem.Size = new Size(53, 22);
-            helpToolStripMenuItem.Text = "Help";
+            AddUserToolItem.Name = "AddUserToolItem";
+            AddUserToolItem.Size = new Size(176, 22);
+            AddUserToolItem.Text = "Add New User";
+            AddUserToolItem.Click += AddUserToolItem_Click;
             // 
-            // aboutToolStripMenuItem
+            // HelpToolMenuItem
             // 
-            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(117, 22);
-            aboutToolStripMenuItem.Text = "About";
+            HelpToolMenuItem.DropDownItems.AddRange(new ToolStripItem[] { AboutToolItem });
+            HelpToolMenuItem.Name = "HelpToolMenuItem";
+            HelpToolMenuItem.Size = new Size(53, 22);
+            HelpToolMenuItem.Text = "Help";
+            // 
+            // AboutToolItem
+            // 
+            AboutToolItem.Name = "AboutToolItem";
+            AboutToolItem.Size = new Size(117, 22);
+            AboutToolItem.Text = "About";
             // 
             // panel1
             // 
@@ -166,16 +176,39 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(ServerMessage_tb);
+            panel2.Controls.Add(ServerMessage_btn);
             panel2.Controls.Add(InputMessage_tb);
             panel2.Controls.Add(ChatMessages_rtb);
             panel2.Controls.Add(SendMessage_btn);
-            panel2.Controls.Add(AllUsers_lstbox);
+            panel2.Controls.Add(Users_lstbox);
             panel2.Controls.Add(statusStrip1);
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 95);
             panel2.Name = "panel2";
             panel2.Size = new Size(784, 466);
             panel2.TabIndex = 6;
+            // 
+            // ServerMessage_tb
+            // 
+            ServerMessage_tb.BorderStyle = BorderStyle.FixedSingle;
+            ServerMessage_tb.Dock = DockStyle.Bottom;
+            ServerMessage_tb.Font = new Font("Arial", 11F);
+            ServerMessage_tb.Location = new Point(169, 350);
+            ServerMessage_tb.Name = "ServerMessage_tb";
+            ServerMessage_tb.Size = new Size(615, 24);
+            ServerMessage_tb.TabIndex = 8;
+            // 
+            // ServerMessage_btn
+            // 
+            ServerMessage_btn.Dock = DockStyle.Bottom;
+            ServerMessage_btn.Location = new Point(169, 374);
+            ServerMessage_btn.Name = "ServerMessage_btn";
+            ServerMessage_btn.Size = new Size(615, 23);
+            ServerMessage_btn.TabIndex = 9;
+            ServerMessage_btn.Text = "Send Server Message";
+            ServerMessage_btn.UseVisualStyleBackColor = true;
+            ServerMessage_btn.Click += ServerMessage_btn_Click;
             // 
             // InputMessage_tb
             // 
@@ -207,14 +240,15 @@
             SendMessage_btn.UseVisualStyleBackColor = true;
             SendMessage_btn.Click += SendMessage_btn_Click;
             // 
-            // AllUsers_lstbox
+            // Users_lstbox
             // 
-            AllUsers_lstbox.Dock = DockStyle.Left;
-            AllUsers_lstbox.FormattingEnabled = true;
-            AllUsers_lstbox.Location = new Point(0, 0);
-            AllUsers_lstbox.Name = "AllUsers_lstbox";
-            AllUsers_lstbox.Size = new Size(169, 444);
-            AllUsers_lstbox.TabIndex = 0;
+            Users_lstbox.Dock = DockStyle.Left;
+            Users_lstbox.FormattingEnabled = true;
+            Users_lstbox.Location = new Point(0, 0);
+            Users_lstbox.Name = "Users_lstbox";
+            Users_lstbox.Size = new Size(169, 444);
+            Users_lstbox.TabIndex = 0;
+            Users_lstbox.SelectedIndexChanged += Users_lstbox_SelectedIndexChanged;
             // 
             // statusStrip1
             // 
@@ -225,16 +259,16 @@
             statusStrip1.TabIndex = 7;
             statusStrip1.Text = "statusStrip1";
             // 
+            // Connection_pbar
+            // 
+            Connection_pbar.Name = "Connection_pbar";
+            Connection_pbar.Size = new Size(100, 16);
+            // 
             // ConnectionStatus_lbl
             // 
             ConnectionStatus_lbl.Name = "ConnectionStatus_lbl";
             ConnectionStatus_lbl.Size = new Size(145, 17);
             ConnectionStatus_lbl.Text = "Connection Status: Online";
-            // 
-            // Connection_pbar
-            // 
-            Connection_pbar.Name = "Connection_pbar";
-            Connection_pbar.Size = new Size(100, 16);
             // 
             // ChatApplication
             // 
@@ -266,11 +300,11 @@
         #endregion
 
         private MenuStrip menuStrip1;
-        private ToolStripMenuItem fileToolStripMenuItem;
-        private ToolStripMenuItem connectToolStripMenuItem;
-        private ToolStripMenuItem disconnectToolStripMenuItem;
-        private ToolStripMenuItem helpToolStripMenuItem;
-        private ToolStripMenuItem aboutToolStripMenuItem;
+        private ToolStripMenuItem FileToolMenuItem;
+        private ToolStripMenuItem ConnectToolItem;
+        private ToolStripMenuItem DisconnectToolItem;
+        private ToolStripMenuItem HelpToolMenuItem;
+        private ToolStripMenuItem AboutToolItem;
         private Panel panel1;
         private TextBox ServerAddr_tb;
         private Label label1;
@@ -280,11 +314,14 @@
         private Button ConnectTo_btn;
         private Panel panel2;
         private RichTextBox ChatMessages_rtb;
-        private ListBox AllUsers_lstbox;
+        private ListBox Users_lstbox;
         private TextBox InputMessage_tb;
         private Button SendMessage_btn;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel ConnectionStatus_lbl;
         private ToolStripProgressBar Connection_pbar;
+        private ToolStripMenuItem AddUserToolItem;
+        private TextBox ServerMessage_tb;
+        private Button ServerMessage_btn;
     }
 }
