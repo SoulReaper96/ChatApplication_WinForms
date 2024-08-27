@@ -10,9 +10,9 @@ namespace Chat_Application_WinForms
 {
     public partial class ChatApplication : Form
     {
-        private TcpClient _client;
-        private NetworkStream _stream;
-        private CancellationTokenSource _cancellationTokenSource;
+        private TcpClient? _client;
+        private NetworkStream? _stream;
+        private CancellationTokenSource? _cancellationTokenSource;
         private ChatServer _chatServer;
 
         public ChatApplication()
@@ -27,7 +27,18 @@ namespace Chat_Application_WinForms
             try
             {
                 string server = ServerAddr_tb.Text;
-                int port = int.Parse(PortNum_tb.Text);
+                if (string.IsNullOrEmpty(server))
+                {
+                    MessageBox.Show("Server address cannot be empty.");
+                    return;
+                }
+
+                if (!int.TryParse(PortNum_tb.Text, out int port))
+                {
+                    MessageBox.Show("Invalid port number.");
+                    return;
+                }
+
                 _client = new TcpClient();
                 await _client.ConnectAsync(server, port);
                 _stream = _client.GetStream();
@@ -35,7 +46,8 @@ namespace Chat_Application_WinForms
                 _cancellationTokenSource = new CancellationTokenSource();
                 _ = Task.Run(() => ReceiveMessages(_cancellationTokenSource.Token));
 
-                ConnectionStatus_lbl.Text = "Connected";
+                ConnectionStatus_lbl.Text = "Connection Status: Connected";
+                Connection_pbar.Value = 100;
             }
             catch (Exception ex)
             {
@@ -52,11 +64,42 @@ namespace Chat_Application_WinForms
         {
             if (_client != null && _client.Connected)
             {
+                if (InputMessage_tb == null)
+                {
+                    MessageBox.Show("Input message textbox is not initialized.");
+                    return;
+                }
+
                 string message = InputMessage_tb.Text;
+                if (string.IsNullOrEmpty(message))
+                {
+                    MessageBox.Show("Message cannot be empty.");
+                    return;
+                }
+
+                if (_stream == null)
+                {
+                    MessageBox.Show("Network stream is not initialized.");
+                    return;
+                }
+
                 byte[] data = Encoding.UTF8.GetBytes(message);
                 await _stream.WriteAsync(data, 0, data.Length);
-                ChatMessages_rtb.AppendText("Me: " + message + Environment.NewLine);
+
+                if (ChatMessages_rtb != null)
+                {
+                    ChatMessages_rtb.AppendText("Me: " + message + Environment.NewLine);
+                }
+                else
+                {
+                    MessageBox.Show("Chat messages textbox is not initialized.");
+                }
+
                 InputMessage_tb.Clear();
+            }
+            else
+            {
+                MessageBox.Show("Not connected to the server.");
             }
         }
 
@@ -67,11 +110,17 @@ namespace Chat_Application_WinForms
                 byte[] buffer = new byte[1024];
                 while (!cancellationToken.IsCancellationRequested)
                 {
+                    if (_stream == null)
+                    {
+                        MessageBox.Show("Network stream is null.");
+                        break;
+                    }
+
                     int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
                     if (bytesRead == 0) break; // Connection closed
 
                     string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                    Invoke(new Action(() => ChatMessages_rtb.AppendText("Server: " + message + Environment.NewLine)));
+                    Invoke(new Action(() => ChatMessages_rtb?.AppendText("Server: " + message + Environment.NewLine)));
                 }
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
@@ -117,7 +166,8 @@ namespace Chat_Application_WinForms
                 _cancellationTokenSource?.Cancel();
                 _client.Close();
                 _client = null;
-                ConnectionStatus_lbl.Text = "Disconnected";
+                ConnectionStatus_lbl.Text = "Connection Status: Disconnected";
+                Connection_pbar.Value = 0;
             }
         }
     }

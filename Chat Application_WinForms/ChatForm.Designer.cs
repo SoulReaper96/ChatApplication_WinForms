@@ -48,6 +48,7 @@
             AllUsers_lstbox = new ListBox();
             statusStrip1 = new StatusStrip();
             ConnectionStatus_lbl = new ToolStripStatusLabel();
+            Connection_pbar = new ToolStripProgressBar();
             menuStrip1.SuspendLayout();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -217,7 +218,7 @@
             // 
             // statusStrip1
             // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { ConnectionStatus_lbl });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { Connection_pbar, ConnectionStatus_lbl });
             statusStrip1.Location = new Point(0, 444);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(784, 22);
@@ -229,6 +230,11 @@
             ConnectionStatus_lbl.Name = "ConnectionStatus_lbl";
             ConnectionStatus_lbl.Size = new Size(145, 17);
             ConnectionStatus_lbl.Text = "Connection Status: Online";
+            // 
+            // Connection_pbar
+            // 
+            Connection_pbar.Name = "Connection_pbar";
+            Connection_pbar.Size = new Size(100, 16);
             // 
             // ChatApplication
             // 
@@ -279,5 +285,6 @@
         private Button SendMessage_btn;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel ConnectionStatus_lbl;
+        private ToolStripProgressBar Connection_pbar;
     }
 }
