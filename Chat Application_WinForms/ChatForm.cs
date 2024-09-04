@@ -16,6 +16,7 @@ namespace Chat_Application_WinForms
         private ChatServer _chatServer;
         private List<string> _users;
         private Dictionary<string, List<string>> _userMessages;
+        private string? Timestamp = DateTime.Now.ToString("HH:mm:ss");
 
         public ChatApplication()
         {
@@ -97,12 +98,12 @@ namespace Chat_Application_WinForms
                     {
                         _userMessages[_selectedUser] = new List<string>();
                     }
-                    _userMessages[_selectedUser].Add("Me: " + message);
+                    _userMessages[_selectedUser].Add($"Me [{Timestamp}]: {message}");
                 }
 
                 if (ChatMessages_rtb != null)
                 {
-                    ChatMessages_rtb.AppendText("Me: " + message + Environment.NewLine);
+                    ChatMessages_rtb.AppendText($"Me [{Timestamp}]: {message}" + Environment.NewLine);
                 }
                 else
                 {
@@ -138,7 +139,7 @@ namespace Chat_Application_WinForms
 
                 if (ChatMessages_rtb != null)
                 {
-                    ChatMessages_rtb.AppendText("Server: " + message + Environment.NewLine);
+                    ChatMessages_rtb.AppendText($"Server [{Timestamp}]: {message}" + Environment.NewLine);
                 }
                 else
                 {
@@ -179,10 +180,10 @@ namespace Chat_Application_WinForms
                             {
                                 _userMessages[_selectedUser] = new List<string>();
                             }
-                            _userMessages[_selectedUser].Add("Server: " + message);
+                            _userMessages[_selectedUser].Add($"Server [{Timestamp}]: {message}");
                         }
 
-                        ChatMessages_rtb?.AppendText("Server: " + message + Environment.NewLine);
+                        ChatMessages_rtb?.AppendText($"Server [{Timestamp}]: {message}" + Environment.NewLine);
                     }));
                 }
             }
@@ -209,12 +210,12 @@ namespace Chat_Application_WinForms
                         {
                             _userMessages[_selectedUser] = new List<string>();
                         }
-                        _userMessages[_selectedUser].Add("Server: " + message);
+                        _userMessages[_selectedUser].Add($"Server [{Timestamp}]: {message}");
                     }
 
                     if (ChatMessages_rtb != null)
                     {
-                        ChatMessages_rtb.AppendText("Server: " + message + Environment.NewLine);
+                        ChatMessages_rtb.AppendText($"Server [{Timestamp}]: {message}" + Environment.NewLine);
                     }
                 }));
             }
@@ -272,7 +273,6 @@ namespace Chat_Application_WinForms
                 SaveUsers();
             }
         }
-
 
         private void LoadUsers()
         {

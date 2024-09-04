@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Chat Application_WinForms")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe8b3bc5f5407f426f7f3829644b604389568459")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+74faeab96e5d0dccae43c9cd30a0fbc0d7e9c636")]
 [assembly: System.Reflection.AssemblyProductAttribute("Chat Application_WinForms")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Chat Application_WinForms")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
